@@ -5,6 +5,7 @@ import Home from "./pages/Home/Home"
 import Calendar from "./pages/Calendar/Calendar";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
+import UserOtp from "./pages/UserOtp/UserOtp";
 function App() {
   return (
     <Router basename="/">
@@ -15,6 +16,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/register" element={<Register />} />      
         <Route path="/login" element={<Login />} />
+        <Route path="/user-otp" element={<UserOtp/>} />
       </Routes>
     </Router>
   );

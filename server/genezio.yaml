@@ -1,16 +1,13 @@
-name: donare-lse
+name: Donare-Lse
 region: eu-central-1
 cloudProvider: aws
 sdk:
   language: js
   path: ../client/src/sdk
-scripts:
-  preBackendDeploy: npm install
-  preFrontendDeploy: cd ../client && npm install && npm run build
 frontend:
   path: ../client/build
-  subdomain: blush-spectacular-goat
+  subdomain: amber-many-puma
 classes:
-  - path: hello.ts
+  - path: controllerUserData.ts
     type: jsonrpc
     methods: []
