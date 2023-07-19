@@ -5,11 +5,9 @@ import {IUser} from "./interfataUser";
 import {ICalendar} from "./interfataCalendar";
 
 export class ControllerUserData {
-
     constructor() {
 
     }
-
     async createUser(
         username: string,
         email: string,
@@ -17,7 +15,7 @@ export class ControllerUserData {
         cpassword: string,
         phone: string) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
 
             database_connection.connect((err) => {
                 if (err) {
@@ -91,7 +89,7 @@ export class ControllerUserData {
                         });
                         console.log("Ok promise: ", okPromise)
 
-                        if (okPromise === false) {
+                        if (!okPromise) {
                             return resolve({status: ok, mesaj: "Succes!"});
 
                         }
@@ -112,7 +110,7 @@ export class ControllerUserData {
         email: string
     ) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
 
             database_connection.connect((err) => {
                 if (err) {
@@ -171,7 +169,7 @@ export class ControllerUserData {
         email: string,
         parola: string) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             database_connection.connect((err) => {
                 if (err) {
                     return resolve({status: "Eroare", mesaje: "Eroare la conectarea cu baza de date"});
@@ -217,7 +215,7 @@ export class ControllerUserData {
         message: string
     ) {
 
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             let subject = "Contact nume - " + name + " prenume - " + prenume + " email - " + email + " telefon - " + phone;
             let mailer = new Send_mailer;
             let mesaj = await mailer.send("donare@lsebucuresti.org", "miloiuc4@gmail.com", subject, message);
@@ -233,18 +231,17 @@ export class ControllerUserData {
 
     async getEventsCalendar() {
 
-        return new Promise(async (resolve, reject) => {
+        return new Promise( (resolve) => {
             database_connection.connect((err) => {
                 if (err) {
-                    return resolve({status: "Eroare", mesaje: "Eroare la conectarea cu baza de date"});
-
+                    return resolve({});
                 }
                 // console.log('Conectat');
             });
 
             database_connection.query(`SELECT * FROM events`, (err: Error | null, results: Array<ICalendar>) => {
                 if (err) {
-                    console.error('Eroare de conectare la baza de date', err)
+                    console.error('Eroare de conectare la baza de date calendar', err)
                     return resolve({});
                 }
 
@@ -253,9 +250,8 @@ export class ControllerUserData {
                     start: new Date(results.start_event).toISOString(),
                     end: new Date(results.end_event).toISOString()
                 }));
-
                 console.log(convertedArray);
-                resolve({convertedArray});
+                return resolve(convertedArray);
 
             })
         });
@@ -269,11 +265,9 @@ export class ControllerUserData {
         number: string
     ) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
 
             email = email.slice(1, email.length - 1);
-
-            console.log(email, startDate, endDate, number);
 
             database_connection.connect((err) => {
                 if (err) {
@@ -284,7 +278,7 @@ export class ControllerUserData {
 
             database_connection.query(`SELECT * FROM events WHERE  title= '${email}'`, (err: Error | null, results: Array<ICalendar>) => {
 
-                console.log(results)
+
                 if (results !== undefined && results.length !== 0) {
 
                     return resolve({status: false, mesaj: "Aveti deja o programare!"});
@@ -302,7 +296,7 @@ export class ControllerUserData {
                     })
 
                 }
-                ;
+
 
             });
         })

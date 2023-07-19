@@ -6,7 +6,7 @@
 import { Remote } from "./remote.js"
 
 export class ControllerUserData {
-  static remote = new Remote("https://3iuav5j2ldbr734uln6dhykdku0qjssn.lambda-url.eu-central-1.on.aws/ControllerUserData")
+  static remote = new Remote("http://127.0.0.1:8083/ControllerUserData")
 
   static async createUser(username, email, password, cpassword, phone) {
     return ControllerUserData.remote.call("ControllerUserData.createUser", username, email, password, cpassword, phone)

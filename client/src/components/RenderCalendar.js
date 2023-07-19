@@ -69,8 +69,9 @@ export class RenderCalendar extends React.Component {
                     dayHeaders={false}
                     weekends={false}
                     // events={[
-                    //   { title: 'event 1', start: '2023-11-01T08:00:00.000Z', end:"2023-11-01T08:15:00.000Z"},
+                    //   { title: "event 1", start: "2023-11-01T08:00:00.000Z", end:"2023-11-01T08:15:00.000Z"},
                     // ]}
+                    // events={[{title: 'miloiuc4@gmail.com', start: '2023-11-01T08:00:00.000Z', end: '2023-11-01T08:15:00.000Z'}]}
                     events={this.state.eventsDate}
                     eventClick={this.handleEventClick}
                 />
