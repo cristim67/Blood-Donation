@@ -1,8 +1,10 @@
 import * as mysql from "mysql2";
+import * as dotenv from "dotenv";
 
+dotenv.config();
 export const database_connection = mysql.createConnection({
-  host: "srv858.hstgr.io",
-  user: "u824022186_admindonare",
-  password: "?LcS@4y6Ns4",
-  database: "u824022186_donare_editia3",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 });
