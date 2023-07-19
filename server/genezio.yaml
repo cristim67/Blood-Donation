@@ -7,7 +7,9 @@ sdk:
 frontend:
   path: ../client/build
   subdomain: amber-many-puma
+scripts:
+  preFrontendDeploy: "cd ../client && npm install && npm run build"
 classes:
   - path: controllerUserData.ts
     type: jsonrpc
-    methods: []
+    methods: [ ]

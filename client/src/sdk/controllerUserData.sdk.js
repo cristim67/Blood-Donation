@@ -6,7 +6,7 @@
 import { Remote } from "./remote.js"
 
 export class ControllerUserData {
-  static remote = new Remote("http://127.0.0.1:8083/ControllerUserData")
+  static remote = new Remote("https://3iuav5j2ldbr734uln6dhykdku0qjssn.lambda-url.eu-central-1.on.aws/ControllerUserData")
 
   static async createUser(username, email, password, cpassword, phone) {
     return ControllerUserData.remote.call("ControllerUserData.createUser", username, email, password, cpassword, phone)
@@ -18,6 +18,18 @@ export class ControllerUserData {
 
   static async login(email, parola) {
     return ControllerUserData.remote.call("ControllerUserData.login", email, parola)
+  }
+
+  static async sendMessage(name, prenume, email, phone, message) {
+    return ControllerUserData.remote.call("ControllerUserData.sendMessage", name, prenume, email, phone, message)
+  }
+
+  static async getEventsCalendar() {
+    return ControllerUserData.remote.call("ControllerUserData.getEventsCalendar")
+  }
+
+  static async addPersonCalendar(email, startDate, endDate, number) {
+    return ControllerUserData.remote.call("ControllerUserData.addPersonCalendar", email, startDate, endDate, number)
   }
 
 }
