@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import { Send_mailer } from "./mailer";
 import { IUser } from "./interfataUser";
 import { ICalendar } from "./interfataCalendar";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export class ControllerUserData {
   constructor() {}
@@ -91,7 +94,7 @@ export class ControllerUserData {
                   let mailer = new Send_mailer();
 
                   let mesaj = await mailer.send(
-                    "donare@lsebucuresti.org",
+                    process.env.MAIL_USER,
                     email,
                     subject,
                     message,
@@ -251,8 +254,8 @@ export class ControllerUserData {
         phone;
       let mailer = new Send_mailer();
       let mesaj = await mailer.send(
-        "donare@lsebucuresti.org",
-        "miloiuc4@gmail.com",
+        process.env.MAIL_USER,
+        process.env.MAIL_SUPPORT,
         subject,
         message,
       );

@@ -1,16 +1,17 @@
 import * as nodemailer from "nodemailer";
+import * as dotenv from "dotenv";
 
+dotenv.config();
 export class Send_mailer {
   constructor() {}
 
-  async send(_from: string, _to: string, _subject: string, _text: string) {
+  async send(_from: any, _to: any, _subject: string, _text: string) {
     const transporter = nodemailer.createTransport({
-      host: "smtp.hostinger.com",
-
-      service: "thunderbird",
+      host: process.env.MAIL_HOST,
+      service: process.env.MAIL_SERVICE,
       auth: {
-        user: "donare@lsebucuresti.org",
-        pass: "Donarelse12!",
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
       },
     });
 

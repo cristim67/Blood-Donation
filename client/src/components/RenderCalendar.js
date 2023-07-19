@@ -42,7 +42,7 @@ export class RenderCalendar extends React.Component {
     if (Status.status) {
       // window.location.reload();
     } else {
-      setError(Status.mesaj);
+      // setError(Status.mesaj);
       console.log(Status.mesaj);
     }
   }
@@ -55,7 +55,6 @@ export class RenderCalendar extends React.Component {
   render() {
     return (
       <div className="calendar">
-        <p>{error}</p>
         <FullCalendar
           plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
           initialView="timeGridDay"
