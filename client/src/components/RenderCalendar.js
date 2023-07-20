@@ -4,7 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { ControllerUserData } from "../sdk/controllerUserData.sdk";
-import { useState } from "react";
 
 export class RenderCalendar extends React.Component {
   constructor(props) {
@@ -47,9 +46,29 @@ export class RenderCalendar extends React.Component {
     }
   }
 
-  handleEventClick(arg) {
-    console.log(localStorage.getItem("email"));
-    console.log(arg.event.title);
+  async handleEventClick(arg) {
+    try {
+      if (
+        localStorage
+          .getItem("email")
+          .slice(1, localStorage.getItem("email").length - 1) ===
+        arg.event.title
+      ) {
+        const deleteEvents = await ControllerUserData.deletePerson(
+          arg.event.title,
+        );
+        console.log(deleteEvents);
+
+        if (deleteEvents.status) {
+          window.location.reload();
+        } else {
+          // setError(deleteEvents.mesaj);
+          console.log(deleteEvents.mesaj);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {

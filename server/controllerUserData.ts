@@ -270,4 +270,30 @@ export class ControllerUserData {
       };
     }
   }
+
+  async deletePerson(email: string) {
+    try {
+      // Find the event to deleted
+      const findEventToDeleted = await this.prisma.events.findUnique({
+        where: { title: email },
+      });
+      // If the event exits, delete it
+      if (findEventToDeleted) {
+        const deletedUser = await this.prisma.events.delete({
+          where: {
+            title: email,
+          },
+        });
+        return { status: true, message: "Event sters" };
+      } else {
+        return { status: false, message: "Event negasit" };
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        mesaj: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
 }

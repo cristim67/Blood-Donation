@@ -32,4 +32,8 @@ export class ControllerUserData {
     return ControllerUserData.remote.call("ControllerUserData.addPersonCalendar", email, startDate, endDate, number)
   }
 
+  static async deletePerson(email) {
+    return ControllerUserData.remote.call("ControllerUserData.deletePerson", email)
+  }
+
 }
