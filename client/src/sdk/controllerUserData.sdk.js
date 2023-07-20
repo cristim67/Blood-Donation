@@ -8,20 +8,20 @@ import { Remote } from "./remote.js"
 export class ControllerUserData {
   static remote = new Remote("http://127.0.0.1:8083/ControllerUserData")
 
-  static async createUser(username, email, password, cpassword, phone) {
-    return ControllerUserData.remote.call("ControllerUserData.createUser", username, email, password, cpassword, phone)
+  static async createUser(username, email, password, confirmedPassword, phone) {
+    return ControllerUserData.remote.call("ControllerUserData.createUser", username, email, password, confirmedPassword, phone)
   }
 
   static async verificareOTP(code, email) {
     return ControllerUserData.remote.call("ControllerUserData.verificareOTP", code, email)
   }
 
-  static async login(email, parola) {
-    return ControllerUserData.remote.call("ControllerUserData.login", email, parola)
+  static async login(email, password) {
+    return ControllerUserData.remote.call("ControllerUserData.login", email, password)
   }
 
-  static async sendMessage(name, prenume, email, phone, message) {
-    return ControllerUserData.remote.call("ControllerUserData.sendMessage", name, prenume, email, phone, message)
+  static async sendMessage(firstName, secondName, email, phone, message) {
+    return ControllerUserData.remote.call("ControllerUserData.sendMessage", firstName, secondName, email, phone, message)
   }
 
   static async getEventsCalendar() {

@@ -24,9 +24,9 @@ export class Send_mailer {
 
     try {
       const info = await transporter.sendMail(mailOptions);
-      return "Email trimis";
+      return true;
     } catch (error) {
-      return "Email Eroare";
+      return false;
     }
   }
 }

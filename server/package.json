@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.0.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
@@ -21,6 +22,8 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
-    "@types/nodemailer": "^6.4.8"
+    "@types/bcryptjs": "^2.4.2",
+    "@types/nodemailer": "^6.4.8",
+    "prisma": "^5.0.0"
   }
 }

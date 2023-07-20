@@ -1,346 +1,273 @@
-import { database_connection } from "./database_connection";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { Send_mailer } from "./mailer";
-import { IUser } from "./interfataUser";
-import { ICalendar } from "./interfataCalendar";
+import { PrismaClient } from "@prisma/client";
 import * as dotenv from "dotenv";
 
 dotenv.config();
 
 export class ControllerUserData {
-  constructor() {}
+  prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
 
   async createUser(
     username: string,
     email: string,
     password: string,
-    cpassword: string,
+    confirmedPassword: string,
     phone: string,
   ) {
-    return new Promise((resolve) => {
-      database_connection.connect((err) => {
-        if (err) {
-          return resolve({
-            status: false,
-            mesaj: "Nu s-a conectat la baza de date.",
-          });
-        }
-        // console.log('Conectat');
-      });
-
-      console.log(username, email, password, cpassword, phone);
-
-      let okPromise = false;
-
-      let ok = true;
-
-      if (password !== cpassword) {
-        ok = false;
-        okPromise = true;
-        return resolve({ status: ok, mesaj: "Parolele nu corespund. " });
+    try {
+      // Check if passwords match
+      if (password !== confirmedPassword) {
+        return { status: false, message: "Parolele nu corespund." };
       }
 
+      // Validate phone number using a regex
       const phoneRegex = /^[0-9]{10}$/;
-
       if (!phoneRegex.test(phone)) {
-        ok = false;
-        okPromise = true;
-        return resolve({
-          status: ok,
-          mesaj: "Numarul de telefon nu este valid. ",
-        });
+        return { status: false, message: "Numarul de telefon nu este valid." };
       }
 
-      database_connection.query(
-        `SELECT * FROM usertable WHERE email = '${email}'`,
-        (err: Error | null, results: Array<IUser>) => {
-          console.log(results);
-
-          if (results !== undefined && results.length !== 0) {
-            ok = false;
-            okPromise = true;
-            console.log("ajunge aici email exista");
-            return resolve({ status: ok, mesaj: "Emailul deja exista" });
-          } else {
-            console.log("este undefined results");
-            bcrypt.hash(password, 10, (err, hashedPassword) => {
-              if (err) {
-                ok = false;
-                okPromise = true;
-                return resolve({
-                  status: ok,
-                  mesaj: "Nu s-a putut cripta parola",
-                });
-              }
-
-              let code: number = Math.floor(
-                Math.random() * (999999 - 111111) + 111111,
-              );
-              let status = "notverified";
-              database_connection.query(
-                `INSERT INTO usertable (name, email, password, code, status,phone) VALUES ('${username}','${email}','${hashedPassword}','${code}','${status}','${phone}')`,
-                async (error: Error | null, _results: any) => {
-                  if (error || _results === undefined) {
-                    ok = false;
-                    okPromise = true;
-                    console.log(error);
-                    return resolve({
-                      status: ok,
-                      mesaj: "Nu s-a putut adauga in baza de date",
-                    });
-                  }
-                  let subject = "Cod pentru verificare email";
-                  let message = `Codul de verificare este ${code}`;
-                  let mailer = new Send_mailer();
-
-                  let mesaj = await mailer.send(
-                    process.env.MAIL_USER,
-                    email,
-                    subject,
-                    message,
-                  );
-                  if (mesaj === "Email Eroare") {
-                    ok = false;
-                    okPromise = true;
-                    return resolve({
-                      status: ok,
-                      mesaj: "Nu s-a putut trimite mailul",
-                    });
-                  }
-                },
-              );
-              console.log("Ok promise: ", okPromise);
-
-              if (!okPromise) {
-                return resolve({ status: ok, mesaj: "Succes!" });
-              }
-            });
-          }
-        },
-      );
-    });
-  }
-
-  async verificareOTP(code: string, email: string) {
-    return new Promise((resolve) => {
-      database_connection.connect((err) => {
-        if (err) {
-          return resolve({
-            status: false,
-            mesaj: "Eroare de conectare la baza de date",
-          });
-        }
-        // console.log('Conectat');
+      // Check if email already exists in the database
+      const existingUser = await this.prisma.usertable.findUnique({
+        where: { email: email },
       });
 
+      if (existingUser) {
+        return { status: false, message: "Emailul deja exista." };
+      }
+
+      const hashedPassword = await bcryptjs.hash(password, 10);
+
+      // Generate a verification code
+      const code: string = Math.floor(
+        Math.random() * (999999 - 111111) + 111111,
+      ).toString();
+
+      const status = "notverified";
+
+      // Create the user in the database
+      await this.prisma.usertable.create({
+        data: {
+          name: username,
+          email: email,
+          password: hashedPassword,
+          code: code,
+          status: status,
+          phone: phone,
+        },
+      });
+
+      // Send verification email
+      const subject = "Cod pentru verificare email";
+      const message = `Codul de verificare este ${code}`;
+      const mailer = new Send_mailer();
+
+      const emailSent = await mailer.send(
+        process.env.MAIL_USER,
+        email,
+        subject,
+        message,
+      );
+
+      if (emailSent) {
+        return { status: true, message: "Succes!" };
+      } else
+        return {
+          status: false,
+          message: "Eroare interna. Te rog reincearca mai tarziu!",
+        };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
+
+  async verificareOTP(code: number, email: string) {
+    try {
       email = email.slice(1, email.length - 1);
-
-      // console.log(code, email.slice(1,email.length-1));
-      database_connection.query(
-        `SELECT * FROM usertable WHERE code = '${code}' AND email= '${email}'`,
-        (err: Error | null, results: Array<IUser>) => {
-          if (err) {
-            return resolve({ status: false, mesaj: "Eroare baza de date" });
-          }
-
-          if (results !== undefined && results.length !== 0) {
-            const statusUpdate = "verified";
-            const codeUpdate = 0;
-            database_connection.query(
-              `UPDATE usertable SET code='${codeUpdate}', status= '${statusUpdate}' WHERE code='${code}'`,
-              (error: Error | null, _results: any) => {
-                if (_results) {
-                  return resolve({ status: true, mesaj: "Sesiune start!" });
-                } else {
-                  return resolve({
-                    status: false,
-                    mesaj: "A esuat la actualizarea codului!",
-                  });
-                }
-              },
-            );
-          } else {
-            database_connection.query(
-              `SELECT * FROM usertable WHERE email= '${email}'`,
-              (errs: Error | null, __results: Array<IUser>) => {
-                if (__results) {
-                  if (__results[0].status === "verified") {
-                    return resolve({
-                      status: true,
-                      mesaj: "Cont deja valid",
-                      mail: email,
-                    });
-                  } else {
-                    return resolve({
-                      status: false,
-                      mesaj: "Ati introdus codul gresit!",
-                      mail: email,
-                    });
-                  }
-                }
-              },
-            );
-          }
-        },
-      );
-    });
-  }
-
-  async login(email: string, parola: string) {
-    return new Promise((resolve) => {
-      database_connection.connect((err) => {
-        if (err) {
-          return resolve({
-            status: "Eroare",
-            mesaje: "Eroare la conectarea cu baza de date",
-          });
-        }
-        // console.log('Conectat');
+      const stringCode = code.toString();
+      // Find the user with the provided code and email
+      const user = await this.prisma.usertable.findUnique({
+        where: { code: stringCode, email: email },
       });
 
-      console.log(email, parola);
-      database_connection.query(
-        `SELECT * FROM usertable WHERE  email= '${email}'`,
-        (err: Error | null, results: Array<IUser>) => {
-          if (results !== undefined && results.length !== 0) {
-            console.log(results[0].password);
-            bcrypt.compare(parola, results[0].password, (err, __result) => {
-              if (err) {
-                return resolve({
-                  status: "Eroare",
-                  mesaje: "Parola nu a putut fi comparata",
-                });
-              }
-              if (__result) {
-                if (results[0].status === "verified")
-                  resolve({ status: "Calendar", mesaje: "Succes" });
-                else {
-                  return resolve({ status: "2fa", mesaje: "Redirect 2fa" });
-                }
-              } else {
-                return resolve({
-                  status: "Eroare",
-                  mesaje: "Parolele nu se potrivesc",
-                });
-              }
-            });
+      if (user) {
+        if (user.status === "verified") {
+          return { status: true, message: "Cont deja valid", mail: email };
+        } else {
+          // Update the user's status and code in the database
+          await this.prisma.usertable.update({
+            where: { id: user.id },
+            data: { code: "0", status: "verified" },
+          });
+
+          return { status: true, message: "Sesiune start!" };
+        }
+      } else {
+        // Check if user exists with the provided email
+        const existingUser = await this.prisma.usertable.findUnique({
+          where: { email: email },
+        });
+
+        if (existingUser) {
+          return {
+            status: false,
+            message: "Ati introdus codul gresit!",
+            mail: email,
+          };
+        } else {
+          return {
+            status: false,
+            message: "Eroare baza de date",
+          };
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
+
+  async login(email: string, password: string) {
+    try {
+      // Find the user with the provided email
+      const user = await this.prisma.usertable.findUnique({
+        where: { email: email },
+      });
+
+      if (user) {
+        // Compare the provided password with the hashed password in the database
+        const passwordMatch = await bcryptjs.compare(password, user.password);
+
+        if (passwordMatch) {
+          if (user.status === "verified") {
+            return { status: "Calendar", message: "Succes" };
           } else {
-            return resolve({
-              status: "Eroare",
-              mesaje: "Emailul nu exista in baza de date",
-            });
+            return { status: "2fa", message: "Redirect 2fa" };
           }
-        },
-      );
-    });
+        } else {
+          return { status: "Eroare", message: "Parolele nu se potrivesc" };
+        }
+      } else {
+        return {
+          status: "Eroare",
+          message: "Emailul nu exista in baza de date",
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "Eroare",
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
   }
 
   async sendMessage(
-    name: string,
-    prenume: string,
+    firstName: string,
+    secondName: string,
     email: string,
     phone: string,
     message: string,
   ) {
-    return new Promise(async (resolve) => {
-      let subject =
+    try {
+      const subject =
         "Contact nume - " +
-        name +
+        firstName +
         " prenume - " +
-        prenume +
+        secondName +
         " email - " +
         email +
         " telefon - " +
         phone;
-      let mailer = new Send_mailer();
-      let mesaj = await mailer.send(
+
+      const mailer = new Send_mailer();
+      const emailSent = await mailer.send(
         process.env.MAIL_USER,
         process.env.MAIL_SUPPORT,
         subject,
         message,
       );
-      console.log(mesaj);
-      if (mesaj === "Email Eroare") {
-        return resolve({ status: false, mesaj: "Nu s-a putut trimite mailul" });
+
+      if (emailSent) {
+        return { status: true, message: "Mail trimis" };
       } else {
-        return resolve({ status: true, mesaj: "Mail trimis" });
+        return { status: false, message: "Nu s-a putut trimite mailul" };
       }
-    });
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
   }
 
   async getEventsCalendar() {
-    return new Promise((resolve) => {
-      database_connection.connect((err) => {
-        if (err) {
-          return resolve({});
-        }
-        // console.log('Conectat');
-      });
+    try {
+      // Find all events in the database
+      const events = await this.prisma.events.findMany();
 
-      database_connection.query(
-        `SELECT * FROM events`,
-        (err: Error | null, results: Array<ICalendar>) => {
-          if (err) {
-            console.error("Eroare de conectare la baza de date calendar", err);
-            return resolve({});
-          }
+      // Convert the events to the desired format for the calendar
+      const convertedArray = events.map((events) => ({
+        title: events.title,
+        start: new Date(events.start_event).toISOString(),
+        end: new Date(events.end_event).toISOString(),
+      }));
 
-          const convertedArray = results.map((results) => ({
-            title: results.title,
-            start: new Date(results.start_event).toISOString(),
-            end: new Date(results.end_event).toISOString(),
-          }));
-          console.log(convertedArray);
-          return resolve(convertedArray);
-        },
-      );
-    });
+      console.log(convertedArray);
+      return convertedArray;
+    } catch (error) {
+      console.error("Eroare interna. Te rog reincearca mai tarziu!", error);
+      return [];
+    }
   }
 
   async addPersonCalendar(
     email: string,
     startDate: string,
     endDate: string,
-    number: string,
+    number: number,
   ) {
-    return new Promise((resolve) => {
+    try {
       email = email.slice(1, email.length - 1);
 
-      database_connection.connect((err) => {
-        if (err) {
-          return resolve({
-            status: "Eroare",
-            mesaje: "Eroare la conectarea cu baza de date",
-          });
-        }
-        console.log("Conectat");
+      // Check if an event with the provided title (email) already exists
+      const existingEvent = await this.prisma.events.findFirst({
+        where: { title: email },
       });
 
-      database_connection.query(
-        `SELECT * FROM events WHERE  title= '${email}'`,
-        (err: Error | null, results: Array<ICalendar>) => {
-          if (results !== undefined && results.length !== 0) {
-            return resolve({
-              status: false,
-              mesaj: "Aveti deja o programare!",
-            });
-          } else {
-            database_connection.query(
-              `INSERT INTO events (title, start_event, end_event, calendar_n) VALUES ('${email}','${startDate}','${endDate}','${number}')`,
-              async (error: Error | null, _results: any) => {
-                if (error || _results === undefined) {
-                  return resolve({
-                    status: false,
-                    mesaj: "Nu s-a putut adauga in baza de date",
-                  });
-                } else {
-                  return resolve({ status: true, mesaj: "S-a adaugat!" });
-                }
-              },
-            );
-          }
-        },
-      );
-    });
+      if (existingEvent) {
+        return { status: false, mesaj: "Aveti deja o programare!" };
+      } else {
+        // Insert the new event into the database
+        await this.prisma.events.create({
+          data: {
+            title: email,
+            start_event: new Date(startDate),
+            end_event: new Date(endDate),
+            calendar_n: number,
+          },
+        });
+
+        return { status: true, mesaj: "S-a adaugat!" };
+      }
+    } catch (error) {
+      console.error("Eroare de conectare la baza de date", error);
+      return {
+        status: false,
+        mesaj: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
   }
 }

@@ -20,7 +20,7 @@ export const UserOtp = (props) => {
     if (status) {
       window.location.replace("/calendar");
     } else {
-      setEroare(Status.mesaj);
+      setEroare(Status.message);
     }
   };
 

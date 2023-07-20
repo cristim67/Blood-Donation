@@ -22,7 +22,7 @@ const Login = (props) => {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
     } else if (status === "Eroare") {
-      setEroare(Status.mesaje);
+      setEroare(Status.message);
     }
   };
 

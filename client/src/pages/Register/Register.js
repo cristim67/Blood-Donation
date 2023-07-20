@@ -29,7 +29,7 @@ export const Register = (props) => {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
     } else {
-      setEroare(Status.mesaj);
+      setEroare(Status.message);
     }
   };
 
