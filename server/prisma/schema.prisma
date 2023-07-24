@@ -20,6 +20,12 @@ model usertable{
   status String
 }
 
+model session{
+  id Int @id @default(autoincrement())
+  email String @unique
+  token String
+}
+
 model events{
   id Int @id @default(autoincrement())
   title String @unique

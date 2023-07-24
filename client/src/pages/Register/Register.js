@@ -1,6 +1,3 @@
-import "../../App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
@@ -22,9 +19,8 @@ export const Register = (props) => {
       passconfirm,
       telefon,
     );
-    console.log(Status);
     const status = Status.status;
-    console.log(Status);
+
     if (status) {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
