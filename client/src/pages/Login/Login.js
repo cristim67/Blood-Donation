@@ -10,16 +10,16 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const Status = await ControllerUserData.login(email, pass);
-    const status = Status.status;
-    if (status === "Calendar") {
+    const status = await ControllerUserData.login(email, pass);
+    const check = status.status;
+    if (check === "Calendar") {
       localStorage.set("apiToken", Status.token);
       localStorage.set("email", email);
       window.location.replace("/calendar");
-    } else if (status === "2fa") {
+    } else if (check === "2fa") {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
-    } else if (status === "Eroare") {
+    } else if (check === "Eroare") {
       setEroare(Status.message);
     }
   };

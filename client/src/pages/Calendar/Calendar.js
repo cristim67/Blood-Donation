@@ -5,11 +5,11 @@ import React from "react";
 const Calendar = () => {
   React.useEffect(() => {
     const checkSession = async () => {
-      const Status = await ControllerUserData.checkSession(
+      const status = await ControllerUserData.checkSession(
         localStorage.getItem("apiToken"),
       );
 
-      if (!Status.status) window.location.replace("/");
+      if (!status.status) window.location.replace("/");
     };
     checkSession();
   }, []);

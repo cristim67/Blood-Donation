@@ -29,18 +29,18 @@ export class RenderCalendar extends React.Component {
     const startDate = arg.startStr;
     const endDate = arg.endStr;
     const calendar = 1;
-    const Status = await ControllerUserData.addPersonCalendar(
+    const status = await ControllerUserData.addPersonCalendar(
       email,
       startDate,
       endDate,
       calendar,
     );
 
-    if (Status.status) {
+    if (status.status) {
       window.location.reload();
     } else {
       // setError(Status.mesaj);
-      console.log(Status.mesaj);
+      console.log(Status.message);
     }
   }
 
@@ -60,7 +60,7 @@ export class RenderCalendar extends React.Component {
           window.location.reload();
         } else {
           // setError(deleteEvents.mesaj);
-          console.log(deleteEvents.mesaj);
+          console.log(deleteEvents.message);
         }
       }
     } catch (error) {
