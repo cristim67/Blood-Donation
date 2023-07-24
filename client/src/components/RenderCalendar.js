@@ -18,6 +18,7 @@ export class RenderCalendar extends React.Component {
   async componentDidMount() {
     try {
       const events = await ControllerUserData.getEventsCalendar();
+      console.log(events);
       this.setState({ eventsDate: events });
     } catch (error) {
       console.log(error);
@@ -35,6 +36,7 @@ export class RenderCalendar extends React.Component {
       endDate,
       calendar,
     );
+    console.log(Status);
 
     if (Status.status) {
       window.location.reload();
@@ -55,6 +57,7 @@ export class RenderCalendar extends React.Component {
         const deleteEvents = await ControllerUserData.deletePerson(
           arg.event.title,
         );
+        console.log(deleteEvents);
 
         if (deleteEvents.status) {
           window.location.reload();

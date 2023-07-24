@@ -1,9 +1,11 @@
+import "../../App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
-import localStorage from "local-storage";
 
-export const UserOtp = () => {
+export const UserOtp = (props) => {
   const [code, setCode] = useState("");
   const [eroare, setEroare] = useState("");
 
@@ -11,11 +13,11 @@ export const UserOtp = () => {
     e.preventDefault();
     const Status = await ControllerUserData.verificareOTP(
       code,
-      localStorage.get("email"),
+      localStorage.getItem("email"),
     );
+    console.log(Status);
     const status = Status.status;
     if (status) {
-      localStorage.set("apiToken", Status.token);
       window.location.replace("/calendar");
     } else {
       setEroare(Status.message);
@@ -26,7 +28,10 @@ export const UserOtp = () => {
     <div className="formulare">
       <div className="auth-form-container SpatiereRegister">
         <h2 className="SpatiereRegister">
-          Verificare Email - {localStorage.get("email")}
+          Verificare Email -{" "}
+          {localStorage
+            .getItem("email")
+            .slice(1, localStorage.getItem("email").length - 1)}
         </h2>
         <form className="register-form" onSubmit={handleSubmit}>
           <p>{eroare ? eroare : ""}</p>

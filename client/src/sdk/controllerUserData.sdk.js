@@ -36,8 +36,4 @@ export class ControllerUserData {
     return ControllerUserData.remote.call("ControllerUserData.deletePerson", email)
   }
 
-  static async checkSession(token) {
-    return ControllerUserData.remote.call("ControllerUserData.checkSession", token)
-  }
-
 }
