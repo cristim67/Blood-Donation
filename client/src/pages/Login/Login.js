@@ -1,5 +1,3 @@
-import "../../App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
@@ -13,9 +11,9 @@ const Login = (props) => {
     e.preventDefault();
 
     const Status = await ControllerUserData.login(email, pass);
-    console.log(Status);
     const status = Status.status;
     if (status === "Calendar") {
+      localStorage.set("apiToken", Status.token);
       localStorage.set("email", email);
       window.location.replace("/calendar");
     } else if (status === "2fa") {
