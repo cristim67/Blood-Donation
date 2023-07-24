@@ -40,7 +40,7 @@ export class RenderCalendar extends React.Component {
       window.location.reload();
     } else {
       // setError(Status.mesaj);
-      console.log(Status.message);
+      console.log(status.message);
     }
   }
 
