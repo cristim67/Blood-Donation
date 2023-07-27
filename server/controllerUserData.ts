@@ -48,6 +48,22 @@ export type AddNewsletterResponse = {
   message: string;
 };
 
+export type ForgotPasswordResponse = {
+  status: boolean;
+  message: string;
+};
+
+export type ResetCodeResponse = {
+  status: boolean;
+  message: string;
+  token?: string;
+};
+
+export type ChangePasswordResponse = {
+  status: boolean;
+  message: string;
+};
+
 export class ControllerUserData {
   prisma: PrismaClient;
 
@@ -149,8 +165,7 @@ export class ControllerUserData {
             where: { id: user.id },
             data: { code: "0", status: "verified" },
           });
-          // @ts-ignore
-          const token = jwt.sign(user, process.env.SECRET_KEY_JWT, {
+          const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
             expiresIn: 3600, // 1 week
           });
           const ActiveSession = await this.prisma.session.create({
@@ -159,7 +174,14 @@ export class ControllerUserData {
               token: token,
             },
           });
-          return { status: true, message: "Sesiune start!", token: token };
+          if (ActiveSession)
+            return { status: true, message: "Sesiune start!", token: token };
+          else {
+            return {
+              status: false,
+              message: "Eroare interna. Te rog reincearca mai tarziu!",
+            };
+          }
         }
       } else {
         // Check if user exists with the provided email
@@ -201,8 +223,7 @@ export class ControllerUserData {
         const passwordMatch = await bcryptjs.compare(password, user.password);
         if (passwordMatch) {
           if (user.status === "verified") {
-            // @ts-ignore
-            const token = jwt.sign(user, process.env.SECRET_KEY_JWT, {
+            const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
               expiresIn: 3600, // 1 week
             });
             const ActiveSession = await this.prisma.session.create({
@@ -211,7 +232,14 @@ export class ControllerUserData {
                 token: token,
               },
             });
-            return { status: "Calendar", message: "Succes", token: token };
+            if (ActiveSession)
+              return { status: "Calendar", message: "Succes", token: token };
+            else {
+              return {
+                status: "Eroare",
+                message: "Eroare interna. Te rog reincearca mai tarziu!",
+              };
+            }
           } else {
             return { status: "2fa", message: "Redirect 2fa" };
           }
@@ -228,6 +256,151 @@ export class ControllerUserData {
       console.error(error);
       return {
         status: "Eroare",
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
+
+  async forgotPassword(email: string): Promise<ForgotPasswordResponse> {
+    try {
+      // Find the user with the provided email
+      const user = await this.prisma.usertable.findUnique({
+        where: { email: email },
+      });
+
+      if (user) {
+        const code: string = Math.floor(
+          Math.random() * (999999 - 111111) + 111111,
+        ).toString();
+        //Assigned the code for verification
+        await this.prisma.usertable.update({
+          where: { id: user.id },
+          data: { code: code },
+        });
+
+        //Send the email with that code
+        const subject = "Cod pentru resetare parola";
+        const message = `Codul de verificare este ${code}`;
+        const mailer = new Send_mailer();
+
+        const emailSent = await mailer.send(
+          process.env.MAIL_USER,
+          email,
+          subject,
+          message,
+        );
+
+        //if it was sent
+        if (emailSent) {
+          return { status: true, message: "Succes!" };
+        } else
+          return {
+            status: false,
+            message: "Eroare interna. Te rog reincearca mai tarziu!",
+          };
+      } else {
+        return {
+          status: false,
+          message: "Emailul nu exista in baza de date",
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
+
+  async resetCode(email: string, code: string): Promise<ResetCodeResponse> {
+    try {
+      const stringCode = code.toString();
+      // Find the user with the provided code and email
+      const user = await this.prisma.usertable.findUnique({
+        where: { code: stringCode, email: email },
+      });
+
+      if (user) {
+        await this.prisma.usertable.update({
+          where: { id: user.id },
+          data: { code: "0", status: "verified" },
+        });
+
+        //Create session token
+        const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
+          expiresIn: 3600, // 1 week
+        });
+
+        const ActiveSession = await this.prisma.session.create({
+          data: {
+            email: email,
+            token: token,
+          },
+        });
+        if (ActiveSession)
+          return { status: true, message: "succes", token: token };
+        else {
+          return {
+            status: false,
+            message: "Eroare interna. Te rog reincearca mai tarziu!",
+          };
+        }
+      } else return { status: false, message: "Email negasit!" };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
+  }
+
+  async changePassword(
+    email: string,
+    password: string,
+    confirmedPassword: string,
+    token: string,
+  ): Promise<ChangePasswordResponse> {
+    try {
+      if (password !== confirmedPassword) {
+        return { status: false, message: "Parolele nu corespund." };
+      }
+      //Check session
+      const ActiveSession = await this.checkSession(token);
+
+      if (ActiveSession) {
+        // Check if email already exists in the database
+        const existingUser = await this.prisma.usertable.findUnique({
+          where: { email: email },
+        });
+        if (existingUser) {
+          //Create HashPassword and update User password
+          const hashedPassword = await bcryptjs.hash(password, 10);
+          await this.prisma.usertable.update({
+            where: { id: existingUser.id },
+            data: { password: hashedPassword },
+          });
+        } else {
+          return {
+            status: false,
+            message: "Eroare interna. Te rog reincearca mai tarziu!",
+          };
+        }
+        return {
+          status: true,
+          message: "succes",
+        };
+      } else {
+        return {
+          status: false,
+          message: "Eroare interna. Te rog reincearca mai tarziu!",
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
         message: "Eroare interna. Te rog reincearca mai tarziu!",
       };
     }
@@ -274,7 +447,7 @@ export class ControllerUserData {
   }
 
   async getEventsCalendar(): Promise<
-    { start: string; end: string; title: string }[]
+    { end: string; start: string; title: string }[]
   > {
     try {
       // Find all events in the database

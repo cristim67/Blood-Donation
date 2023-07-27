@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import logo from "../assets/img/logo.svg";
-import { Windows } from "react-bootstrap-icons";
-
 export const NavBarOther = () => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
@@ -25,12 +23,6 @@ export const NavBarOther = () => {
   const onUpdateActiveLink = (value) => {
     setActiveLink(value);
   };
-
-  const [isLogged, setIsLogged] = useState(false);
-
-  function redirectionare() {
-    Windows.href.location = "/register";
-  }
 
   return (
     <Navbar expand="md" className={scrolled ? "scrolled" : ""}>

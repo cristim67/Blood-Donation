@@ -20,6 +20,18 @@ export class ControllerUserData {
     return ControllerUserData.remote.call("ControllerUserData.login", email, password)
   }
 
+  static async forgotPassword(email) {
+    return ControllerUserData.remote.call("ControllerUserData.forgotPassword", email)
+  }
+
+  static async resetCode(email, code) {
+    return ControllerUserData.remote.call("ControllerUserData.resetCode", email, code)
+  }
+
+  static async changePassword(email, password, confirmedPassword, token) {
+    return ControllerUserData.remote.call("ControllerUserData.changePassword", email, password, confirmedPassword, token)
+  }
+
   static async sendMessage(firstName, secondName, email, phone, message) {
     return ControllerUserData.remote.call("ControllerUserData.sendMessage", firstName, secondName, email, phone, message)
   }
@@ -38,6 +50,10 @@ export class ControllerUserData {
 
   static async checkSession(token) {
     return ControllerUserData.remote.call("ControllerUserData.checkSession", token)
+  }
+
+  static async addNewsletter(email) {
+    return ControllerUserData.remote.call("ControllerUserData.addNewsletter", email)
   }
 
 }

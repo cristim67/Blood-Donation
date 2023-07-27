@@ -4,6 +4,7 @@ import { Footer } from "../../components/Footer";
 import { Beneficii } from "../../components/Beneficii";
 import { Projects } from "../../components/Projects";
 import { Contact } from "../../components/Contact";
+import { Newsletter } from "../../components/Newsletter";
 import ScrollToTop from "../../components/ScrollToTop";
 
 function Home() {
@@ -15,6 +16,7 @@ function Home() {
       <Projects />
       <Beneficii />
       <Contact />
+      <Newsletter />
       <Footer />
     </div>
   );
