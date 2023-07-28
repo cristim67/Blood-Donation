@@ -10,17 +10,17 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const Status = await ControllerUserData.login(email, pass);
-    const status = Status.status;
-    if (status === "Calendar") {
-      localStorage.set("apiToken", Status.token);
+    const status = await ControllerUserData.login(email, pass);
+    const check = status.status;
+    if (check === "Calendar") {
+      localStorage.set("apiToken", status.token);
       localStorage.set("email", email);
       window.location.replace("/calendar");
-    } else if (status === "2fa") {
+    } else if (check === "2fa") {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
-    } else if (status === "Eroare") {
-      setEroare(Status.message);
+    } else if (check === "Eroare") {
+      setEroare(status.message);
     }
   };
 

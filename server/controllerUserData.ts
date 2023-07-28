@@ -38,8 +38,14 @@ export type DeletePersonResponse = {
   status: boolean;
   message: string;
 };
+
 export type CheckSessionResponse = {
   status: boolean;
+};
+
+export type AddNewsletterResponse = {
+  status: boolean;
+  message: string;
 };
 
 export class ControllerUserData {
@@ -372,5 +378,31 @@ export class ControllerUserData {
 
       return { status: true };
     } else return { status: false };
+  }
+
+  async addNewsletter(email: string): Promise<AddNewsletterResponse> {
+    try {
+      // Check if email already exists in the database
+      const existingUser = await this.prisma.newsletter.findUnique({
+        where: { email: email },
+      });
+
+      if (existingUser) {
+        return { status: false, message: "Emailul deja exista." };
+      }
+      // Add email in the database
+      await this.prisma.newsletter.create({
+        data: {
+          email: email,
+        },
+      });
+      return { status: true, message: "Emailul adaugat cu succes." };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: false,
+        message: "Eroare interna. Te rog reincearca mai tarziu!",
+      };
+    }
   }
 }

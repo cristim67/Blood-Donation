@@ -12,20 +12,20 @@ export const Register = (props) => {
   const [eroare, setEroare] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const Status = await ControllerUserData.createUser(
+    const status = await ControllerUserData.createUser(
       name,
       email,
       pass,
       passconfirm,
       telefon,
     );
-    const status = Status.status;
+    const check = status.status;
 
-    if (status) {
+    if (check) {
       localStorage.set("email", email);
       window.location.replace("/user-otp");
     } else {
-      setEroare(Status.message);
+      setEroare(status.message);
     }
   };
 
