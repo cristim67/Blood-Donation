@@ -31,7 +31,7 @@ model events{
   title String @unique
   start_event DateTime
   end_event DateTime
-  calendar_n Int
+  calendar_n String
 }
 
 model newsletter{

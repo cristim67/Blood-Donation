@@ -446,7 +446,10 @@ export class ControllerUserData {
     }
   }
 
-  async getEventsCalendar(token: string): Promise<
+  async getEventsCalendar(
+    token: string,
+    numberCalendar: string,
+  ): Promise<
     {
       end: string;
       start: string;
@@ -459,7 +462,9 @@ export class ControllerUserData {
 
       if (ActiveSession) {
         // Find all events in the database
-        const events = await this.prisma.events.findMany();
+        const events = await this.prisma.events.findMany({
+          where: { calendar_n: numberCalendar },
+        });
         // Convert the events to the desired format for the calendar
         return events.map((events) => ({
           title: events.title,
@@ -480,7 +485,7 @@ export class ControllerUserData {
     email: string,
     startDate: string,
     endDate: string,
-    number: number,
+    number: string,
   ): Promise<AddPersonResponse> {
     try {
       //Check session
