@@ -446,19 +446,29 @@ export class ControllerUserData {
     }
   }
 
-  async getEventsCalendar(): Promise<
-    { end: string; start: string; title: string }[]
+  async getEventsCalendar(token: string): Promise<
+    {
+      end: string;
+      start: string;
+      title: string;
+    }[]
   > {
     try {
-      // Find all events in the database
-      const events = await this.prisma.events.findMany();
+      //Check session
+      const ActiveSession = await this.checkSession(token);
 
-      // Convert the events to the desired format for the calendar
-      return events.map((events) => ({
-        title: events.title,
-        start: new Date(events.start_event).toISOString(),
-        end: new Date(events.end_event).toISOString(),
-      }));
+      if (ActiveSession) {
+        // Find all events in the database
+        const events = await this.prisma.events.findMany();
+        // Convert the events to the desired format for the calendar
+        return events.map((events) => ({
+          title: events.title,
+          start: new Date(events.start_event).toISOString(),
+          end: new Date(events.end_event).toISOString(),
+        }));
+      } else {
+        return [];
+      }
     } catch (error) {
       console.error("Eroare interna. Te rog reincearca mai tarziu!", error);
       return [];
@@ -466,33 +476,42 @@ export class ControllerUserData {
   }
 
   async addPersonCalendar(
+    token: string,
     email: string,
     startDate: string,
     endDate: string,
     number: number,
   ): Promise<AddPersonResponse> {
     try {
-      email = email.slice(1, email.length - 1);
+      //Check session
+      const ActiveSession = await this.checkSession(token);
 
-      // Check if an event with the provided title (email) already exists
-      const existingEvent = await this.prisma.events.findFirst({
-        where: { title: email },
-      });
-
-      if (existingEvent) {
-        return { status: false, message: "Aveti deja o programare!" };
-      } else {
-        // Insert the new event into the database
-        await this.prisma.events.create({
-          data: {
-            title: email,
-            start_event: new Date(startDate),
-            end_event: new Date(endDate),
-            calendar_n: number,
-          },
+      if (ActiveSession) {
+        // Check if an event with the provided title (email) already exists
+        const existingEvent = await this.prisma.events.findFirst({
+          where: { title: email },
         });
 
-        return { status: true, message: "S-a adaugat!" };
+        if (existingEvent) {
+          return { status: false, message: "Aveti deja o programare!" };
+        } else {
+          // Insert the new event into the database
+          await this.prisma.events.create({
+            data: {
+              title: email,
+              start_event: new Date(startDate),
+              end_event: new Date(endDate),
+              calendar_n: number,
+            },
+          });
+
+          return { status: true, message: "S-a adaugat!" };
+        }
+      } else {
+        return {
+          status: false,
+          message: "Eroare interna. Te rog reincearca mai tarziu!",
+        };
       }
     } catch (error) {
       console.error("Eroare de conectare la baza de date", error);
@@ -503,23 +522,41 @@ export class ControllerUserData {
     }
   }
 
-  // @ts-ignore
-  async deletePerson(email: string): Promise<DeletePersonResponse> {
+  async deletePerson(
+    token: string,
+    email: string,
+  ): Promise<DeletePersonResponse> {
     try {
-      // Find the event to deleted
-      const findEventToDeleted = await this.prisma.events.findUnique({
-        where: { title: email },
-      });
-      // If the event exits, delete it
-      if (findEventToDeleted) {
-        const deletedUser = await this.prisma.events.delete({
-          where: {
-            title: email,
-          },
+      //Check session
+      const ActiveSession = await this.checkSession(token);
+
+      if (ActiveSession) {
+        // Find the event to deleted
+        const findEventToDeleted = await this.prisma.events.findUnique({
+          where: { title: email },
         });
-        if (deletedUser) return { status: true, message: "Event sters" };
+        // If the event exits, delete it
+        if (findEventToDeleted) {
+          const deletedUser = await this.prisma.events.delete({
+            where: {
+              title: email,
+            },
+          });
+          if (deletedUser) return { status: true, message: "Event sters" };
+          else {
+            return { status: false, message: "Event negasit" };
+          }
+        } else {
+          return {
+            status: false,
+            message: "Eroare interna. Te rog reincearca mai tarziu!",
+          };
+        }
       } else {
-        return { status: false, message: "Event negasit" };
+        return {
+          status: false,
+          message: "Eroare interna. Te rog reincearca mai tarziu!",
+        };
       }
     } catch (error) {
       console.error(error);
