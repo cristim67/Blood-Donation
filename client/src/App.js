@@ -6,6 +6,9 @@ import Calendar from "./pages/Calendar/Calendar";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import UserOtp from "./pages/UserOtp/UserOtp";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetCode from "./pages/ResetCode/ResetCode";
+import PasswordChange from "./pages/PasswordChange/PasswordChange";
 import Logout from "./pages/Logout/Logout";
 import Preloader from "./components/Preloader";
 import { PreloaderProvider } from "./components/PreloaderProvider";
@@ -21,6 +24,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/user-otp" element={<UserOtp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-code" element={<ResetCode />} />
+        <Route path="/password-change" element={<PasswordChange />} />
         <Route path="/logout" element={<Logout />} />
       </Routes>
     </Router>

@@ -3,20 +3,20 @@ import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
 import localStorage from "local-storage";
 
-export const UserOtp = () => {
+export const ResetCode = () => {
   const [code, setCode] = useState("");
   const [eroare, setEroare] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const status = await ControllerUserData.verificareOTP(
-      code,
+    const status = await ControllerUserData.resetCode(
       localStorage.get("email"),
+      code,
     );
     const check = status.status;
     if (check) {
       localStorage.set("apiToken", status.token);
-      window.location.replace("/calendar");
+      window.location.replace("/password-change");
     } else {
       setEroare(status.message);
     }
@@ -26,7 +26,7 @@ export const UserOtp = () => {
     <div className="formulare">
       <div className="auth-form-container SpatiereRegister">
         <h2 className="SpatiereRegister">
-          Verificare Email - {localStorage.get("email")}
+          Introdu codul de resetare - {localStorage.get("email")}
         </h2>
         <form className="register-form" onSubmit={handleSubmit}>
           <p>{eroare ? eroare : ""}</p>
@@ -53,4 +53,4 @@ export const UserOtp = () => {
     </div>
   );
 };
-export default UserOtp;
+export default ResetCode;

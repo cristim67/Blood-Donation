@@ -7,7 +7,7 @@ export const Beneficii = () => {
       <Row className="tabel">
         <Col className="coloana">
           <h1 className="rembot3 color-black">Beneficii</h1>
-          <ol class="gradient-list">
+          <ol className="gradient-list">
             <li className="color-black">
               Fiecare donator primeste un card de bonuri de masa in valoare de
               70 de lei.

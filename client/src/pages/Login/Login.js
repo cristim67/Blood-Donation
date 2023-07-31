@@ -53,6 +53,10 @@ const Login = (props) => {
             Conectează-mă!
           </button>
         </form>
+        <Link to="/forgot-password">
+          <button className="link-btn ">Ai uitat parola?</button>
+        </Link>
+
         <Link to="/register">
           <button className="link-btn ">
             Nu ai cont? Înregistrează-te aici!

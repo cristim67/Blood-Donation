@@ -34,8 +34,8 @@ body {
     overflow-x: hidden;
 
     position: relative;
-    background: linear-gradient(263deg, rgba(250, 114, 104, 1) 0%, rgba(250, 114, 104, 1) 35%, rgba(198, 35, 104, 1) 100%) !important;
-    color: #fff !important;
+    background: deepskyblue !important;
+    color: #000000 !important;
     font-family: 'Centra', sans-serif !important;
 }
 
@@ -97,7 +97,7 @@ nav.navbar {
 
 nav.navbar.scrolled {
     padding: 0px 0;
-    background-color: rgba(123, 25, 124, 0.967);
+    background-color: #000000;
 
 }
 
@@ -107,7 +107,7 @@ nav.navbar a.navbar-brand {
 
 nav.navbar .navbar-nav .nav-link.navbar-link {
     font-weight: 400;
-    color: #fff !important;
+    color: #FFFFFF !important;
     letter-spacing: 0.8px;
     padding: 0 25px;
     font-size: 18px;
@@ -185,7 +185,7 @@ span.navbar-text {
 
 .navbar-text button::before {
     content: "";
-    width: 0%;
+    width: 0;
     height: 100%;
     position: absolute;
     background-color: #fff;
@@ -263,7 +263,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .banner {
     margin-top: 0;
     padding: 260px 0 100px 0;
-    /* background-image: url("../src/assets/img/Donare\ sange_cover.jpg"); */
+     /*background-image: url("../src/assets/img/Donare\ sange_cover.jpg");*/
 
     background-position: top center;
     background-size: cover;
@@ -274,7 +274,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     font-weight: 700;
     letter-spacing: 0.8px;
     padding: 8px 10px;
-    background: linear-gradient(90.21deg, rgba(170, 54, 124, 0.5) -5.91%, rgba(74, 47, 189, 0.5) 111.58%);
+    background:#FFFFFF;
     border: 1px solid rgba(255, 255, 255, 0.5);
     font-size: 20px;
     margin-bottom: 16px;
@@ -630,7 +630,7 @@ ol.gradient-list > li + li {
     opacity: 1;
     height: 200px;
     margin-top: 3rem;
-    transform: opacity 0.6s ease;
+
 }
 
 .imagineproiect:hover {
