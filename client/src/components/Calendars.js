@@ -1,10 +1,23 @@
+import React, { useState } from "react";
 import { Container, Row, Col, Tab, Nav } from "react-bootstrap";
 import colorSharp2 from "../assets/img/color-sharp2.png";
 import "animate.css";
 import TrackVisibility from "react-on-screen";
 import { RenderCalendar } from "./RenderCalendar";
 
-export const Calendare = () => {
+export const Calendars = () => {
+  const [eventsDate, setEventsDate] = useState([]);
+
+  const updateEventsDate = (dayCalendar, newEvents) => {
+    setEventsDate((prevEvents) => {
+      const updatedEvents = {
+        ...prevEvents,
+        [dayCalendar]: newEvents,
+      };
+      return updatedEvents;
+    });
+  };
+
   return (
     <section className="project calendare" id="project">
       <Container>
@@ -42,14 +55,29 @@ export const Calendare = () => {
                     >
                       <Tab.Pane eventKey="first">
                         <Row>
-                          <RenderCalendar />
+                          <RenderCalendar
+                            dayCalendar={"first"}
+                            key={Math.random()}
+                            eventsDate={eventsDate["first"]}
+                            updateEventsDate={updateEventsDate}
+                          />
                         </Row>
                       </Tab.Pane>
                       <Tab.Pane eventKey="second">
-                        <RenderCalendar />
+                        <RenderCalendar
+                          dayCalendar={"second"}
+                          key={Math.random()}
+                          eventsDate={eventsDate["second"]}
+                          updateEventsDate={updateEventsDate}
+                        />
                       </Tab.Pane>
                       <Tab.Pane eventKey="third">
-                        <RenderCalendar />
+                        <RenderCalendar
+                          dayCalendar={"third"}
+                          key={Math.random()}
+                          eventsDate={eventsDate["third"]}
+                          updateEventsDate={updateEventsDate}
+                        />
                       </Tab.Pane>
                     </Tab.Content>
                   </Tab.Container>
@@ -59,7 +87,11 @@ export const Calendare = () => {
           </Col>
         </Row>
       </Container>
-      <img className="background-image-right" src={colorSharp2}></img>
+      <img
+        className="background-image-right"
+        src={colorSharp2}
+        alt="background-image-right"
+      ></img>
     </section>
   );
 };

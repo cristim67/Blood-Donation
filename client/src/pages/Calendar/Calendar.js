@@ -1,5 +1,5 @@
 import { NavBarOther } from "../../components/NavBarOther";
-import { Calendare } from "../../components/Calendare";
+import { Calendars } from "../../components/Calendars";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
 import React from "react";
 const Calendar = () => {
@@ -17,7 +17,7 @@ const Calendar = () => {
   return (
     <div className="App">
       <NavBarOther />
-      <Calendare />
+      <Calendars />
     </div>
   );
 };

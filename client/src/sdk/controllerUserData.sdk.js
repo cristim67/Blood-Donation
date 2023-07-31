@@ -36,16 +36,16 @@ export class ControllerUserData {
     return ControllerUserData.remote.call("ControllerUserData.sendMessage", firstName, secondName, email, phone, message)
   }
 
-  static async getEventsCalendar() {
-    return ControllerUserData.remote.call("ControllerUserData.getEventsCalendar")
+  static async getEventsCalendar(token, numberCalendar) {
+    return ControllerUserData.remote.call("ControllerUserData.getEventsCalendar", token, numberCalendar)
   }
 
-  static async addPersonCalendar(email, startDate, endDate, number) {
-    return ControllerUserData.remote.call("ControllerUserData.addPersonCalendar", email, startDate, endDate, number)
+  static async addPersonCalendar(token, email, startDate, endDate, number) {
+    return ControllerUserData.remote.call("ControllerUserData.addPersonCalendar", token, email, startDate, endDate, number)
   }
 
-  static async deletePerson(email) {
-    return ControllerUserData.remote.call("ControllerUserData.deletePerson", email)
+  static async deletePerson(token, email) {
+    return ControllerUserData.remote.call("ControllerUserData.deletePerson", token, email)
   }
 
   static async checkSession(token) {
