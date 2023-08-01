@@ -168,13 +168,13 @@ export class ControllerUserData {
           const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
             expiresIn: 3600, // 1 week
           });
-          const ActiveSession = await this.prisma.session.create({
+          const activeSession = await this.prisma.session.create({
             data: {
               email: email,
               token: token,
             },
           });
-          if (ActiveSession)
+          if (activeSession)
             return { status: true, message: "Sesiune start!", token: token };
           else {
             return {
