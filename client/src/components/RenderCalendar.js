@@ -4,32 +4,20 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { ControllerUserData } from "../sdk/controllerUserData.sdk";
-
-export class RenderCalendar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      eventsDate: undefined,
-    };
-    this.handleDateClick = this.handleDateClick.bind(this);
-    this.handleEventClick = this.handleEventClick.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const events = await ControllerUserData.getEventsCalendar();
-      this.setState({ eventsDate: events });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async handleDateClick(arg) {
-    const email = localStorage.getItem("email");
+import localStorage from "local-storage";
+export const RenderCalendar = ({
+  dayCalendar,
+  updateEventsDate,
+  eventsDate,
+}) => {
+  const handleDateClick = async (arg) => {
+    const token = localStorage.get("apiToken");
+    const email = localStorage.get("email");
     const startDate = arg.startStr;
     const endDate = arg.endStr;
-    const calendar = 1;
+    const calendar = dayCalendar;
     const status = await ControllerUserData.addPersonCalendar(
+      token,
       email,
       startDate,
       endDate,
@@ -37,26 +25,24 @@ export class RenderCalendar extends React.Component {
     );
 
     if (status.status) {
+      updateEventsDate(dayCalendar, status.events);
       window.location.reload();
     } else {
       // setError(Status.mesaj);
       console.log(status.message);
     }
-  }
+  };
 
-  async handleEventClick(arg) {
+  const handleEventClick = async (arg) => {
     try {
-      if (
-        localStorage
-          .getItem("email")
-          .slice(1, localStorage.getItem("email").length - 1) ===
-        arg.event.title
-      ) {
+      if (localStorage.get("email") === arg.event.title) {
         const deleteEvents = await ControllerUserData.deletePerson(
+          localStorage.get("apiToken"),
           arg.event.title,
         );
 
         if (deleteEvents.status) {
+          updateEventsDate(dayCalendar, deleteEvents.events);
           window.location.reload();
         } else {
           // setError(deleteEvents.mesaj);
@@ -66,37 +52,39 @@ export class RenderCalendar extends React.Component {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const eventsForDay = eventsDate && eventsDate[dayCalendar];
+
+  if (!eventsForDay) {
+    return null;
   }
 
-  render() {
-    return (
-      <div className="calendar">
-        <FullCalendar
-          plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
-          initialView="timeGridDay"
-          slotDuration="00:15:00"
-          validRange={{ start: "2023-11-01", end: "2023-11-02" }}
-          slotMinTime="08:30:00"
-          slotMaxTime="12:30:00"
-          allDaySlot={false}
-          height="auto"
-          selectable={true}
-          select={this.handleDateClick}
-          headerToolbar={{
-            right: "",
-            center: "",
-          }}
-          eventDisplay="block"
-          dayHeaders={false}
-          weekends={false}
-          // events={[
-          //   { title: "event 1", start: "2023-11-01T08:00:00.000Z", end:"2023-11-01T08:15:00.000Z"},
-          // ]}
-          // events={[{title: 'miloiuc4@gmail.com', start: '2023-11-01T08:00:00.000Z', end: '2023-11-01T08:15:00.000Z'}]}
-          events={this.state.eventsDate}
-          eventClick={this.handleEventClick}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="calendar">
+      <FullCalendar
+        plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
+        initialView="timeGridDay"
+        slotDuration="00:15:00"
+        validRange={{ start: "2023-11-01", end: "2023-11-02" }}
+        slotMinTime="08:30:00"
+        slotMaxTime="12:30:00"
+        allDaySlot={false}
+        height="auto"
+        selectable={true}
+        select={handleDateClick}
+        headerToolbar={{
+          right: "",
+          center: "",
+        }}
+        eventDisplay="block"
+        dayHeaders={false}
+        weekends={false}
+        events={eventsForDay}
+        eventClick={handleEventClick}
+      />
+    </div>
+  );
+};
+
+export default RenderCalendar;

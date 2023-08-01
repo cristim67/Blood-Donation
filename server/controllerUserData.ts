@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Send_mailer } from "./mailer";
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -168,13 +169,13 @@ export class ControllerUserData {
           const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
             expiresIn: 3600, // 1 week
           });
-          const ActiveSession = await this.prisma.session.create({
+          const activeSession = await this.prisma.session.create({
             data: {
               email: email,
               token: token,
             },
           });
-          if (ActiveSession)
+          if (activeSession)
             return { status: true, message: "Sesiune start!", token: token };
           else {
             return {
@@ -226,13 +227,13 @@ export class ControllerUserData {
             const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
               expiresIn: 3600, // 1 week
             });
-            const ActiveSession = await this.prisma.session.create({
+            const activeSession = await this.prisma.session.create({
               data: {
                 email: email,
                 token: token,
               },
             });
-            if (ActiveSession)
+            if (activeSession)
               return { status: "Calendar", message: "Succes", token: token };
             else {
               return {
@@ -332,13 +333,13 @@ export class ControllerUserData {
           expiresIn: 3600, // 1 week
         });
 
-        const ActiveSession = await this.prisma.session.create({
+        const activeSession = await this.prisma.session.create({
           data: {
             email: email,
             token: token,
           },
         });
-        if (ActiveSession)
+        if (activeSession)
           return { status: true, message: "succes", token: token };
         else {
           return {
@@ -446,7 +447,10 @@ export class ControllerUserData {
     }
   }
 
-  async getEventsCalendar(token: string): Promise<
+  async getEventsCalendar(
+    token: string,
+    numberCalendar: string,
+  ): Promise<
     {
       end: string;
       start: string;
@@ -459,7 +463,9 @@ export class ControllerUserData {
 
       if (ActiveSession) {
         // Find all events in the database
-        const events = await this.prisma.events.findMany();
+        const events = await this.prisma.events.findMany({
+          where: { calendar_n: numberCalendar },
+        });
         // Convert the events to the desired format for the calendar
         return events.map((events) => ({
           title: events.title,
@@ -480,7 +486,7 @@ export class ControllerUserData {
     email: string,
     startDate: string,
     endDate: string,
-    number: number,
+    number: string,
   ): Promise<AddPersonResponse> {
     try {
       //Check session
@@ -493,7 +499,15 @@ export class ControllerUserData {
         });
 
         if (existingEvent) {
-          return { status: false, message: "Aveti deja o programare!" };
+          return {
+            status: false,
+            message:
+              "Aveti deja o programare pe data de " +
+              moment(existingEvent.start_event).format("YYYY-MM-DD HH:mm") +
+              " la calendarul " +
+              existingEvent.calendar_n +
+              " !",
+          };
         } else {
           // Insert the new event into the database
           await this.prisma.events.create({
@@ -528,9 +542,9 @@ export class ControllerUserData {
   ): Promise<DeletePersonResponse> {
     try {
       //Check session
-      const ActiveSession = await this.checkSession(token);
+      const activeSession = await this.checkSession(token);
 
-      if (ActiveSession) {
+      if (activeSession) {
         // Find the event to deleted
         const findEventToDeleted = await this.prisma.events.findUnique({
           where: { title: email },
