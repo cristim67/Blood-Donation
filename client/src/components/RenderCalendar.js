@@ -1,35 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { ControllerUserData } from "../sdk/controllerUserData.sdk";
 import localStorage from "local-storage";
+
 export const RenderCalendar = ({
   dayCalendar,
   updateEventsDate,
   eventsDate,
 }) => {
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
   const handleDateClick = async (arg) => {
     const token = localStorage.get("apiToken");
     const email = localStorage.get("email");
     const startDate = arg.startStr;
     const endDate = arg.endStr;
-    const calendar = dayCalendar;
-    const status = await ControllerUserData.addPersonCalendar(
-      token,
-      email,
-      startDate,
-      endDate,
-      calendar,
-    );
 
-    if (status.status) {
-      updateEventsDate(dayCalendar, status.events);
-      window.location.reload();
-    } else {
-      // setError(Status.mesaj);
-      console.log(status.message);
+    try {
+      const status = await ControllerUserData.addPersonCalendar(
+        token,
+        email,
+        startDate,
+        endDate,
+        dayCalendar,
+      );
+
+      if (status.status) {
+        updateEventsDate(dayCalendar, status.events);
+        window.location.reload();
+      } else {
+        showNotification(status.message);
+      }
+    } catch (error) {
+      showNotification(error);
     }
   };
 
@@ -43,14 +56,14 @@ export const RenderCalendar = ({
 
         if (deleteEvents.status) {
           updateEventsDate(dayCalendar, deleteEvents.events);
+          showNotification(deleteEvents.message);
           window.location.reload();
         } else {
-          // setError(deleteEvents.mesaj);
-          console.log(deleteEvents.message);
+          showNotification(deleteEvents.message);
         }
       }
     } catch (error) {
-      console.log(error);
+      showNotification(error);
     }
   };
 
@@ -62,6 +75,7 @@ export const RenderCalendar = ({
 
   return (
     <div className="calendar">
+      {notification && <div className="notification">{notification}</div>}
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
         initialView="timeGridDay"

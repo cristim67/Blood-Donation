@@ -96,7 +96,7 @@ nav.navbar {
 }
 
 nav.navbar.scrolled {
-    padding: 0px 0;
+    padding: 0 0;
     background-color: #000000;
 
 }
@@ -108,7 +108,7 @@ nav.navbar a.navbar-brand {
 nav.navbar .navbar-nav .nav-link.navbar-link {
     font-weight: 400;
     color: #FFFFFF !important;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     padding: 0 25px;
     font-size: 18px;
     opacity: 0.75;
@@ -263,16 +263,13 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .banner {
     margin-top: 0;
     padding: 260px 0 100px 0;
-     /*background-image: url("../src/assets/img/Donare\ sange_cover.jpg");*/
-
-    background-position: top center;
     background-size: cover;
-    background-repeat: no-repeat;
+    background: deepskyblue no-repeat top center;
 }
 
 .banner .tagline {
     font-weight: 700;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     padding: 8px 10px;
     background:#FFFFFF;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -284,7 +281,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .banner h1 {
     font-size: 65px;
     font-weight: 700;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     line-height: 1;
     margin-bottom: 20px;
     display: block;
@@ -293,7 +290,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .banner p {
     color: #B8B8B8;
     font-size: 18px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     line-height: 1.5em;
     width: 96%;
 }
@@ -303,7 +300,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     font-weight: 700;
     font-size: 20px;
     margin-top: 60px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     display: flex;
     align-items: center;
 }
@@ -361,7 +358,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .skill p {
     color: #B8B8B8;
     font-size: 18px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     line-height: 1.5em;
     margin: 14px 0 75px 0;
 }
@@ -401,7 +398,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .project p {
     color: #B8B8B8;
     font-size: 18px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     line-height: 1.5em;
     margin: 14px auto 30px auto;
     text-align: center;
@@ -427,7 +424,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     color: #fff;
     width: 100%;
     font-size: 17px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     font-weight: 500;
     position: relative;
     transition: 0.3s ease-in-out;
@@ -602,7 +599,7 @@ ol.gradient-list > li + li {
 
 .nav-link#projects-tabs-tab-first {
     border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 55px 0px 0px 55px;
+    border-radius: 55px 0 0 55px;
 }
 
 .nav-link#projects-tabs-tab-second {
@@ -670,7 +667,7 @@ ol.gradient-list > li + li {
 .proj-txtx h4 {
     font-size: 30px;
     font-weight: 700;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     line-height: 1.1em;
 }
 
@@ -678,7 +675,7 @@ ol.gradient-list > li + li {
     font-style: italic;
     font-weight: 400;
     font-size: 15px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
 }
 
 .background-image-right {
@@ -715,7 +712,7 @@ ol.gradient-list > li + li {
     padding: 18px 26px;
     font-weight: 500;
     font-size: 18px;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     transition: 0.3s ease-in-out;
 }
 
@@ -795,7 +792,7 @@ ol.gradient-list > li + li {
 
 .newsletter-bx h3 {
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     line-height: 1.2em;
 }
 
@@ -847,7 +844,7 @@ ol.gradient-list > li + li {
     padding: 20px 65px;
     color: #fff;
     font-weight: 500;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     border-radius: 18px;
 }
 
@@ -859,7 +856,7 @@ ol.gradient-list > li + li {
     font-weight: 400;
     font-size: 14px;
     color: #B8B8B8;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     margin-top: 20px;
 }
 
@@ -1019,5 +1016,27 @@ input {
     align-items: center;
     background: #fff;
 
+    z-index: 9999;
+}
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 26px;
+    padding: 8px 16px;
+    background-color: indianred;
+    color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+}
+notification-contact{
+    position: fixed;
+    top: 100px;
+    right: 26px;
+    padding: 8px 16px;
+    background-color: #e1c237;
+    color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 9999;
 }

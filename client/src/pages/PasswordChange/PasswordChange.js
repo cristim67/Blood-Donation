@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
 import localStorage from "local-storage";
 
-export const PasswordChange = (props) => {
+export const PasswordChange = () => {
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [eroare, setEroare] = useState("");

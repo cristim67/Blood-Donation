@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import contactImg from "../assets/img/nume-doctor.svg";
 import "animate.css";
@@ -6,6 +6,15 @@ import TrackVisibility from "react-on-screen";
 import { ControllerUserData } from "../sdk/controllerUserData.sdk";
 
 export const Contact = () => {
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000); // 5 seconds, you can adjust the duration as needed
+  };
+
   const formInitialDetails = {
     firstName: "",
     lastName: "",
@@ -14,8 +23,7 @@ export const Contact = () => {
     message: "",
   };
   const [formDetails, setFormDetails] = useState(formInitialDetails);
-  const [buttonText, setButtonText] = useState("Send");
-  const [status] = useState({});
+  const [buttonText, setButtonText] = useState("Trimite");
 
   const onFormUpdate = (category, value) => {
     setFormDetails({
@@ -26,15 +34,16 @@ export const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setButtonText("Sending...");
-    const Status = await ControllerUserData.sendMessage(
+    setButtonText("Trimite...");
+    const status = await ControllerUserData.sendMessage(
       formDetails.firstName,
       formDetails.lastName,
       formDetails.email,
       formDetails.phone,
       formDetails.message,
     );
-    if (Status.status) {
+    if (status.status) {
+      showNotification(status.message);
       setButtonText("Send");
       setFormDetails(formInitialDetails);
     }
@@ -42,6 +51,7 @@ export const Contact = () => {
 
   return (
     <section className="contact" id="contact">
+      {notification && <div className="notification">{notification}</div>}
       <Container>
         <Row className="align-items-center">
           <Col size={12} md={6}>
@@ -76,6 +86,7 @@ export const Contact = () => {
                           onChange={(e) =>
                             onFormUpdate("firstName", e.target.value)
                           }
+                          required={true}
                         />
                       </Col>
                       <Col size={12} sm={6} className="px-1">
@@ -86,6 +97,7 @@ export const Contact = () => {
                           onChange={(e) =>
                             onFormUpdate("lastName", e.target.value)
                           }
+                          required={true}
                         />
                       </Col>
                       <Col size={12} sm={6} className="px-1">
@@ -96,6 +108,7 @@ export const Contact = () => {
                           onChange={(e) =>
                             onFormUpdate("email", e.target.value)
                           }
+                          required={true}
                         />
                       </Col>
                       <Col size={12} sm={6} className="px-1">
@@ -106,6 +119,7 @@ export const Contact = () => {
                           onChange={(e) =>
                             onFormUpdate("phone", e.target.value)
                           }
+                          required={true}
                         />
                       </Col>
                       <Col size={12} className="px-1">
@@ -116,22 +130,12 @@ export const Contact = () => {
                           onChange={(e) =>
                             onFormUpdate("message", e.target.value)
                           }
+                          required={true}
                         ></textarea>
                         <button type="submit">
                           <span>{buttonText}</span>
                         </button>
                       </Col>
-                      {status.message && (
-                        <Col>
-                          <p
-                            className={
-                              status.success === false ? "danger" : "success"
-                            }
-                          >
-                            {status.message}
-                          </p>
-                        </Col>
-                      )}
                     </Row>
                   </form>
                 </div>

@@ -15,22 +15,22 @@ import { PreloaderProvider } from "./components/PreloaderProvider";
 
 function App() {
   return (
-    // <PreloaderProvider>
-    //   <Preloader/>
-    <Router basename="/">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/user-otp" element={<UserOtp />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-code" element={<ResetCode />} />
-        <Route path="/password-change" element={<PasswordChange />} />
-        <Route path="/logout" element={<Logout />} />
-      </Routes>
-    </Router>
-    // </PreloaderProvider>
+    <PreloaderProvider>
+      <Preloader />
+      <Router basename="/">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/user-otp" element={<UserOtp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-code" element={<ResetCode />} />
+          <Route path="/password-change" element={<PasswordChange />} />
+          <Route path="/logout" element={<Logout />} />
+        </Routes>
+      </Router>
+    </PreloaderProvider>
   );
 }
 

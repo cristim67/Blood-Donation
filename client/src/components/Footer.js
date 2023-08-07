@@ -14,16 +14,25 @@ export const Footer = () => {
           </Col>
           <Col size={12} sm={6} className="text-center text-sm-end">
             <div className="social-icon marginfooter">
-              <a href="https://www.facebook.com/lseorgro" target="_blank">
+              <a
+                href="https://www.facebook.com/lseorgro"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img src={navIcon2} alt="Icon" />
               </a>
               <a
                 href="https://www.instagram.com/ligastudentilorelectronistilse/"
                 target="_blank"
+                rel="noreferrer"
               >
                 <img src={navIcon3} alt="Icon" />
               </a>
-              <a href="https://www.tiktok.com/@lsebucuresti.ro" target="_blank">
+              <a
+                href="https://www.tiktok.com/@lsebucuresti.ro"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img src={navIcon4} alt="Icon" />
               </a>
             </div>

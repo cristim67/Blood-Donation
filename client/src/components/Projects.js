@@ -14,35 +14,35 @@ export const Projects = () => {
   const projects = [
     {
       title: "Consumul de alcool",
-      description: "Nu se consuma alcool cu 24 de ore inainte de a dona",
+      description: "Nu se consumă alcool cu 24 de ore înainte de a dona",
       imgUrl: projImg1,
     },
     {
       title: "Greutate",
-      description: "Greutatea minima ceruta este de 50 de kg",
+      description: "Greutatea minimă cerută este de 50 de kg",
       imgUrl: projImg2,
     },
     {
       title: "Fumat",
-      description: "Nu fumati in ziua donarii",
+      description: "Nu fumați în ziua donării",
       imgUrl: projImg3,
     },
     {
-      title: "Interventii chirurgicale",
+      title: "Intervenții chirurgicale",
       description:
-        "Sa nu aveti interventii chirurgicale in ultimele 3 saptamani ( regula se aplica si in cazul persoanelor care urmeaza tratament medical)",
+        "Să nu aveți intervenții chirurgicale în ultimele 3 săptămâni ( regula se aplică și în cazul persoanelor care urmează tratament medical)",
       imgUrl: projImg4,
     },
     {
       title: "Tatuaj/Piercing",
       description:
-        "Nu se poate dona daca ai facut un tatuaj/piercing in ultimele 6 luni",
+        "Nu se poate dona dacă ai facut un tatuaj/piercing în ultimele 6 luni",
       imgUrl: projImg5,
     },
     {
       title: "Simptome",
       description:
-        "Sa nu aveti simptome de raceala sau sa nu fiti vaccinati cu 48 de ore inainte de a dona",
+        "Să nu aveți simptome de răceală sau să nu fiți vaccinați cu 48 de ore înainte de a dona",
       imgUrl: projImg6,
     },
   ];
@@ -82,7 +82,11 @@ export const Projects = () => {
           </Col>
         </Row>
       </Container>
-      <img className="background-image-right" src={colorSharp2}></img>
+      <img
+        className="background-image-right"
+        src={colorSharp2}
+        alt={"background-right"}
+      ></img>
     </section>
   );
 };

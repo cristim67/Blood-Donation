@@ -1,5 +1,6 @@
 import localStorage from "local-storage";
-const Logout = (props) => {
+
+const Logout = () => {
   localStorage.clear();
   window.location.replace("/");
 };
