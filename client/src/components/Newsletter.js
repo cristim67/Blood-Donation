@@ -1,15 +1,23 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { ControllerUserData } from "../sdk/controllerUserData.sdk";
+
 export const Newsletter = () => {
   const [email, setEmail] = useState("");
+  const [notification, setNotification] = useState(null);
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && email.indexOf("@") > -1) {
       const status = await ControllerUserData.addNewsletter(email);
       if (status.status) clearFields();
-      else window.location.replace("/");
+      else showNotification(status.message);
     }
   };
 
@@ -26,6 +34,9 @@ export const Newsletter = () => {
           </Col>
           <Col md={6} xl={7}>
             <form onSubmit={handleSubmit}>
+              {notification && (
+                <div className="notification">{notification}</div>
+              )}
               <div className="new-email-bx">
                 <input
                   value={email}

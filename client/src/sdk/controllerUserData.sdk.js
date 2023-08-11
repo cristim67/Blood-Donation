@@ -36,8 +36,8 @@ export class ControllerUserData {
     return ControllerUserData.remote.call("ControllerUserData.sendMessage", firstName, secondName, email, phone, message)
   }
 
-  static async getEventsCalendar(token, numberCalendar) {
-    return ControllerUserData.remote.call("ControllerUserData.getEventsCalendar", token, numberCalendar)
+  static async getEventsCalendar(token, numberCalendar, email) {
+    return ControllerUserData.remote.call("ControllerUserData.getEventsCalendar", token, numberCalendar, email)
   }
 
   static async addPersonCalendar(token, email, startDate, endDate, number) {
