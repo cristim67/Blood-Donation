@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
 import localStorage from "local-storage";
 
-const Login = (props) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [eroare, setEroare] = useState("");
@@ -39,6 +39,7 @@ const Login = (props) => {
             placeholder="nume@stud.etti.upb.ro"
             id="email"
             name="email"
+            required={true}
           />
           <label htmlFor="password">Parola</label>
           <input
@@ -48,6 +49,7 @@ const Login = (props) => {
             placeholder="********"
             id="password"
             name="password"
+            required={true}
           />
           <button type="submit" className="button-form">
             Conectează-mă!

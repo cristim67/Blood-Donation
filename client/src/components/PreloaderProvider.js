@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useEffect } from "react";
 
-export const PreloaderContext = createContext();
+export const PreloaderContext = createContext(undefined);
 
 export const PreloaderProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);

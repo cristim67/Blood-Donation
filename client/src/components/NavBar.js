@@ -5,7 +5,7 @@ import logo from "../assets/img/logo.svg";
 export const NavBar = () => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
-  const isLoggedIn = localStorage.getItem("email");
+  const isLoggedIn = localStorage.getItem("apiToken");
 
   useEffect(() => {
     const onScroll = () => {

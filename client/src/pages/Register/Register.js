@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ControllerUserData } from "../../sdk/controllerUserData.sdk";
 import localStorage from "local-storage";
 
-export const Register = (props) => {
+export const Register = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [name, setName] = useState("");

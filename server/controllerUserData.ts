@@ -167,7 +167,7 @@ export class ControllerUserData {
             data: { code: "0", status: "verified" },
           });
           const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
-            expiresIn: 3600, // 1 week
+            expiresIn: 3600, // 1 day
           });
           const activeSession = await this.prisma.session.create({
             data: {
@@ -330,7 +330,7 @@ export class ControllerUserData {
 
         //Create session token
         const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, {
-          expiresIn: 3600, // 1 week
+          expiresIn: 3600, // 1 day
         });
 
         const activeSession = await this.prisma.session.create({
@@ -450,6 +450,7 @@ export class ControllerUserData {
   async getEventsCalendar(
     token: string,
     numberCalendar: string,
+    email: string,
   ): Promise<
     {
       end: string;
@@ -458,7 +459,9 @@ export class ControllerUserData {
     }[]
   > {
     try {
-      //Check session
+      email = email.slice(1, email.length - 1);
+
+      // Check session
       const ActiveSession = await this.checkSession(token);
 
       if (ActiveSession) {
@@ -466,17 +469,28 @@ export class ControllerUserData {
         const events = await this.prisma.events.findMany({
           where: { calendar_n: numberCalendar },
         });
+
         // Convert the events to the desired format for the calendar
-        return events.map((events) => ({
-          title: events.title,
-          start: new Date(events.start_event).toISOString(),
-          end: new Date(events.end_event).toISOString(),
-        }));
+        const formattedEvents = events.map((event) => {
+          const eventStart = new Date(event.start_event).toISOString();
+          const eventEnd = new Date(event.end_event).toISOString();
+
+          // Check if email is equal to event title
+          const title = email === event.title ? event.title : "Slot ocupat";
+
+          return {
+            title: title,
+            start: eventStart,
+            end: eventEnd,
+          };
+        });
+
+        return formattedEvents;
       } else {
         return [];
       }
     } catch (error) {
-      console.error("Eroare interna. Te rog reincearca mai tarziu!", error);
+      console.error("Eroare internă. Te rog reîncearcă mai târziu!", error);
       return [];
     }
   }

@@ -40,6 +40,7 @@ export const Calendars = () => {
       const events = await ControllerUserData.getEventsCalendar(
         localStorage.getItem("apiToken"),
         day,
+        localStorage.getItem("email"),
       );
       return events;
     } catch (error) {
