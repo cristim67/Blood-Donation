@@ -15,6 +15,7 @@ This is a website for online appointments that uses:
  * `MySQL` for database
  * `genezio` for developing and deploying the project
 
+
 Note: `genezio deploy` deploys both backend and frontend.
 If you want to test this example out-of-the-box by running 1 command, head to the `server` directory and run `genezio deploy`.
 
